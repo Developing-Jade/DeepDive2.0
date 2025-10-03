@@ -53,8 +53,11 @@ fun App() {
                 // Bottom button stays pinned
                 Button(
                     onClick = {
-                        if (selectedTask == null && tasks.isNotEmpty()) {
-                            selectedTask = tasks.random()
+                        if (selectedTask == null) {
+                            val availableTasks = tasks.filterNot { completedTasks.contains(it) }
+                            if ( availableTasks.isNotEmpty()) {
+                                selectedTask = availableTasks.random()
+                            }
                         } else {
                             // Mark complete
                             selectedTask?.let { completedTasks.add(it) }
@@ -64,7 +67,8 @@ fun App() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    enabled = tasks.isNotEmpty()
+                    enabled = tasks.any {it !in completedTasks}
+
                 ) {
                     Text(if (selectedTask == null) "Pick Random Task" else "Mark Complete")
                 }
